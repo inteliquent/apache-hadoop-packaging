@@ -30,6 +30,29 @@ $] sudo dpkg -i hadoop-3.2.0.deb
 
 Hadoop will be installed into the `/usr/local` directory.
 
+Finally, the following systemd scripts have been provided for convenience.
+
+- hadoop-datanode.service
+- hadoop-historyserver.service
+- hadoop-namenode.service
+- hadoop-nodemanager.service
+- hadoop-resourcemanager.service
+- hadoop-webappproxy.service
+
+None of the services run by default but that can be changed using the following command.
+
+```
+$] systemd enable hadoop-${SERVICE_NAME}.service
+```
+
+To start a service use the following command.
+
+```
+$] systemd start hadoop-${SERVICE_NAME}.service
+```
+
+**Note: ${SERVICE_NAME} should be replaced with the desired service name e.g. datanode**
+
 ### Build A Hadoop Docker Container
 
 ```
