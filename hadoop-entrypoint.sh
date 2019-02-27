@@ -1,50 +1,28 @@
 #!/bin/bash
 
-HADOOP_CONF_DIR=/etc/hadoop
-
-function start_data_node {
-    hadoop-daemons.sh --config "$HADOOP_CONF_DIR" --script hdfs start datanode
-}
-
-function start_name_node {
-    if [ -n "$HADOOP_NAME_NODE_INIT" ] && [ $(echo "$HADOOP_NAME_NODE_INIT" | tr '[:upper:]' '[:lower:]') == "true" ]; then
-        if [ -n "$HADOOP_CLUSTER_NAME" ]; then
-            hdfs namenode -format "$HADOOP_CLUSTER_NAME"
-        else
-            echo "The environment variable HADOOP_CLUSTER_NAME must be defined to initialize the name node."
-            exit 1
+function init_hdfs {
+    if [ -n "$HADOOP_NAME_NODE_INIT" ]; then
+        if [ $(echo "$HADOOP_NAME_NODE_INIT" | tr '[:upper:]' '[:lower:]') == "true" ]; then
+            if [ -n "$HADOOP_CLUSTER_NAME" ]; then
+                hdfs namenode -format "$HADOOP_CLUSTER_NAME"
+            else
+                echo "The environment variable HADOOP_CLUSTER_NAME must be defined to initialize the name node."
+                exit 1
+            fi
         fi
     fi
-    hadoop-daemon.sh --config "$HADOOP_CONF_DIR" --script hdfs start namenode
-}
-
-function start_node_manager {
-    yarn-daemons.sh --config "$HADOOP_CONF_DIR" start nodemanager
-}
-
-function start_resource_manager {
-    yarn-daemon.sh --config "$HADOOP_CONF_DIR" start resourcemanager
-}
-
-function start_history_server {
-    mr-jobhistory-daemon.sh --config "$HADOOP_CONF_DIR" start historyserver
-}
-
-function start_web_app_proxy {
-    yarn-daemon.sh --config "$HADOOP_CONF_DIR" start proxyserver
-
 }
 
 # Create the config directory if it doesn't exist.
-if [ ! -d "$HADOOP_CONF_DIR" ]; then
-    mkdir -p "$HADOOP_CONF_DIR"
+if [ ! -d /etc/hadoop ]; then
+    mkdir -p /etc/hadoop
 fi
 
 # If the config directory is empty copy vanilla config files
 # to the config directory and give the user an opportunity to
 # configure the container.
-if [ "$(ls -A "$HADOOP_CONF_DIR" | wc -l)" -eq "0" ]; then
-    cp -varf /usr/local/share/hadoop/config/* "$HADOOP_CONF_DIR"
+if [ "$(ls -A /etc/hadoop | wc -l)" -eq "0" ]; then
+    cp -varf /usr/local/share/hadoop/config/* /etc/hadoop
     echo "A vanilla configuration file set has been copied into the configuration folder."
     echo "Please update the configuration files and restart the container."
     exit 1
@@ -53,22 +31,29 @@ fi
 # Specialize the container.
 case "$HADOOP_NODE_TYPE" in
     namenode)
-        start_name_node
+        init_hdfs
+        systemd start hadoop-namenode.service
+        systemd status hadoop-namenode.service
         ;;
     resourcemanager)
-        start_resource_manager
+        systemd start hadoop-resourcemanager.service
+        systemd status hadoop-resourcemanager.service
         ;;
     datanode)
-        start_data_node
+        systemd start hadoop-datanode.service
+        systemd status hadoop-datanode.service
         ;;
     nodemanager)
-        start_node_manager
+        systemd start hadoop-nodemanager.service
+        systemd status hadoop-nodemanager.service
         ;;
     historyserver)
-        start_history_server
+        systemd start hadoop-historyserver.service
+        systemd status hadoop-historyserver.service
         ;;
     webappproxy)
-        start_web_app_proxy
+        systemd start hadoop-webappproxy.service
+        systemd status hadoop-webappproxy.service
         ;;
     *)
         echo "Environment variable HADOOP_NODE_TYPE must be one of the following: {namenode|resourcemanager|datanode|nodemanager}"
