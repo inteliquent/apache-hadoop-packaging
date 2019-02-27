@@ -1,0 +1,12 @@
+[Unit]
+Description=Hadoop Map/Reduce History Server
+After=network-online.target
+
+[Service]
+Restart=always
+TimeoutStartSec=0
+ExecStart=mr-jobhistory-daemon.sh --config /etc/hadoop start historyserver
+ExecStop=mr-jobhistory-daemon.sh --config /etc/hadoop stop historyserver
+
+[Install]
+WantedBy=multi-user.target

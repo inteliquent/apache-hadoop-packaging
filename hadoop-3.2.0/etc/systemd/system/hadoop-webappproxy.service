@@ -1,0 +1,12 @@
+[Unit]
+Description=Hadoop Web App Proxy
+After=network-online.target
+
+[Service]
+Restart=always
+TimeoutStartSec=0
+ExecStart=yarn-daemon.sh --config /etc/hadoop start proxyserver
+ExecStop=yarn-daemon.sh --config /etc/hadoop stop proxyserver
+
+[Install]
+WantedBy=multi-user.target

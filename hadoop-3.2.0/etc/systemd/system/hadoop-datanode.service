@@ -1,0 +1,12 @@
+[Unit]
+Description=Hadoop Data Node
+After=network-online.target
+
+[Service]
+Restart=always
+TimeoutStartSec=0
+ExecStart=hadoop-daemons.sh --config /etc/hadoop --script hdfs start datanode
+ExecStop=hadoop-daemons.sh --config /etc/hadoop --script hdfs stop datanode
+
+[Install]
+WantedBy=multi-user.target
