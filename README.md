@@ -62,6 +62,14 @@ $] docker build -t voyant/hadoop:3.2.0 .
 
 ### Deploying A Hadoop Container
 
-```
+The following environment variables are used to initialize an Apache Hadoop Container.
 
+- HADOOP_CLUSTER_NAME This variable contains the Apache Hadoop cluster name and is required when $HADOOP_NAME_NODE_INIT is set to true. (Optional)
+- HADOOP_NAME_NODE_INIT This variable when set to true will format the HDFS filesystem. (Optional)
+- HADOOP_NODE_TYPE This variable contains the specialization of a container. Possible options are `datanode`, `historyserver`, `namenode`, `nodemanager`, `resourcemanager` and `webappproxy`.
+
+To run a name node container just run the following command.
+
+```
+$] sudo docker run -d --name hadoop -e HADOOP_NODE_TYPE=namenode -v /etc/hadoop:/etc/hadoop voyant/hadoop:3.2.0
 ```
