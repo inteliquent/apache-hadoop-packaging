@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y curl openjdk-8-jdk rsync ssh
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 # Install Hadoop.
-COPY hadoop-3.2.0.deb /root/hadoop-3.2.0.deb
+RUN curl https://s3.amazonaws.com/voyantpublic/hadoop-3.2.0.deb -o /root/hadoop-3.2.0.deb
 RUN dpkg -i /root/hadoop-3.2.0.deb && rm -f /root/hadoop-3.2.0.deb
 
 # Set the container's entry point.
