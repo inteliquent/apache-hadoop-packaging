@@ -3,7 +3,7 @@ Apache Hadoop Packaging
 
 This repository contains everything necessary to build a hadoop 3.2.0 debian package and docker container.
 
-**Note: The debian archive and instructions outlined in this README have only be tested on Ubuntu 16.xx**
+*Note: The debian archive and instructions outlined in this README have only be tested on Ubuntu 16.xx*
 
 ### Clone This Repository
 
@@ -51,7 +51,7 @@ To start a service use the following command.
 $] systemd start hadoop-${SERVICE_NAME}.service
 ```
 
-**Note: ${SERVICE_NAME} should be replaced with the desired service name e.g. datanode**
+*Note: ${SERVICE_NAME} should be replaced with the desired service name e.g. datanode*
 
 ### Build A Hadoop Docker Container
 
@@ -73,5 +73,7 @@ To run a name node container just run the following command.
 ```
 $] sudo docker run -d --name hadoop -e HADOOP_NODE_TYPE=namenode -v /etc/hadoop:/etc/hadoop voyant/hadoop:3.2.0
 ```
+
+*Note: If the host folder `/etc/hadoop` is empty the container will write a set of default config files and exit. Once the files are updated restart the container and it the proper service will launch with the updated config files.*
 
 For more information on how to deploy an Apache Hadoop cluster please visit the [project site](http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html).
