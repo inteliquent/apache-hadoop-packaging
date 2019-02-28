@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y software-properties-common
 RUN add-apt-repository ppa:openjdk-r/ppa
 
 # Install Hadoop dependencies.
-RUN apt-get update && apt-get install -y curl openjdk-8-jdk rsync ssh
+RUN apt-get update && apt-get install -y openjdk-8-jdk rsync ssh
 
 # Set the JAVA_HOME environment variable.
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
