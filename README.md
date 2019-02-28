@@ -74,6 +74,6 @@ To run a name node container just run the following command.
 $] sudo docker run -d --name hadoop -e HADOOP_NODE_TYPE=namenode -v /etc/hadoop:/etc/hadoop voyant/hadoop:3.2.0
 ```
 
-*Note: If the host folder `/etc/hadoop` is empty the container will write a set of default config files and exit. Once the files are updated restart the container and it the proper service will launch with the updated config files.*
+*Note: If the host folder `/etc/hadoop` is empty the container will write a set of default config files and exit. Once the files are updated restart the container and the selected specialization will run with the updated config files.*
 
 For more information on how to deploy an Apache Hadoop cluster please visit the [project site](http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html).
