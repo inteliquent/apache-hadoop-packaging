@@ -57,7 +57,7 @@ $] systemd start hadoop-${SERVICE_NAME}.service
 
 ```
 $] cd apache-hadoop-packaging
-$] docker build -t voyant/hadoop:3.2.0 .
+$] docker build -t inteliquent/apache-hadoop:3.2.0 .
 ```
 
 ### Deploying A Hadoop Container
