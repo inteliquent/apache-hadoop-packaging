@@ -14,7 +14,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 COPY hadoop-3.2.0 /tmp/hadoop-3.2.0
 WORKDIR /tmp
 RUN dpkg-deb --build hadoop-3.2.0
-RUN dpkg -i hadoop-3.2.0.deb && rm -f hadoop-3.2.0.deb hadoop-3.2.0
+RUN dpkg -i hadoop-3.2.0.deb && rm -fr hadoop-3.2.0.deb hadoop-3.2.0
 
 # Set the container's entry point.
 COPY hadoop-entrypoint.sh /usr/local/bin/hadoop-entrypoint.sh
