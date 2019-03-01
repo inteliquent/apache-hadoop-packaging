@@ -12,8 +12,12 @@ RUN apt update && \
     curl -o /tmp/hadoop-2.9.2.tar.gz http://mirrors.ibiblio.org/apache/hadoop/common/hadoop-2.9.2/hadoop-2.9.2.tar.gz && \
     cd /tmp && \
     tar xzvf hadoop-2.9.2.tar.gz && \
+    rm hadoop-2.9.2.tar.gz && \
     # Create a debian package for Apache Hadoop.
     cd hadoop-2.9.2 && \
+    rm LICENSE.txt && \
+    rm NOTICE.txt && \
+    rm README.txt && \
     mkdir -p usr/local && \
     mv bin usr/local/ && \
     mv etc usr/local/ && \
@@ -35,9 +39,10 @@ ldconfig -v" > postinst && \
     chmod 0555 postinst && \
     cd /tmp && \
     dpkg-deb --build hadoop-2.9.2 && \
+    rm -rf /tmp/hadoop-2.9.2 && \
     # Install Apache Hadoop.
     dpkg -i hadoop-2.9.2.deb && \
-    rm -rf /tmp/hadoop-2.9.2 /tmp/hadoop-2.9.2.deb /tmp/hadoop-2.9.2.tar.gz
+    rm -rf /tmp/hadoop-2.9.2.deb
 
 # Configure the environment.
 ENV HADOOP_HOME=/usr/local
