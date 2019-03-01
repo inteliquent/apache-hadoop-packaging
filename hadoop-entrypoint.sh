@@ -43,7 +43,10 @@ case "${HADOOP_NODE_TYPE}" in
         systemctl disable ssh
         if [ -n "${HADOOP_NAME_NODE_INIT}" ]; then
             if [ $(echo "${HADOOP_NAME_NODE_INIT}" | tr '[:upper:]' '[:lower:]') == "true" ]; then
-                init_hdfs
+                if [ ! -f "/etc/hadoop/firstboot" ]; then
+                    init_hdfs
+                    touch /etc/hadoop/firstboot
+                fi
             fi
         fi
         hadoop-daemon.sh --script hdfs start namenode
