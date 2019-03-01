@@ -15,6 +15,8 @@ function update_sshd_port {
     if [ "${HADOOP_NODE_TYPE}" == "datanode" ] || [ "${HADOOP_NODE_TYPE}" == "nodemanager" ]; then
         if [ -n "${SSHD_PORT}" ]; then
             sed -i "s/Port 22/Port ${SSHD_PORT}/g" /etc/ssh/sshd_config
+            systemctl stop ssh
+            systemctl start ssh
         fi
     fi
 }

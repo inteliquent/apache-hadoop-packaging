@@ -43,7 +43,8 @@ ldconfig -v" > postinst && \
     # Install Apache Hadoop.
     dpkg -i hadoop-2.9.2.deb && \
     rm -rf /tmp/hadoop-2.9.2.deb && \
-    mkdir /var/log/hadoop
+    mkdir /var/log/hadoop && \
+    mkdir /root/.ssh
 
 # Configure the environment.
 ENV HADOOP_HOME=/usr/local
