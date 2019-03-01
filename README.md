@@ -14,6 +14,7 @@ The following environment variables are used to initialize an Apache Hadoop Cont
 - HADOOP_CLUSTER_NAME This variable contains the Apache Hadoop cluster name and is required when $HADOOP_NAME_NODE_INIT is set to true. (Optional)
 - HADOOP_NAME_NODE_INIT This variable when set to true will bootstrap the Apache Hadoop cluster. (Optional)
 - HADOOP_NODE_TYPE This variable contains the specialization of a container. Possible options are `datanode`, `historyserver`, `namenode`, `nodemanager`, `resourcemanager` and `webappproxy`.
+- SSHD_PORT This variable is only valid for node types `datanode` and `nodemanager`. It containes the port number the container's SSHd should listen on.
 
 To run a name node container just run the following command.
 
