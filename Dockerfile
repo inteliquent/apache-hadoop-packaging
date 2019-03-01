@@ -25,7 +25,7 @@ RUN apt update && \
     mkdir DEBIAN && \
     cd DEBIAN && \
     echo "Package: hadoop\n\
-Version: 3.2.0\n\
+Version: 2.9.2\n\
 Maintainer: Thomas Quintana <thomas.quintana@voyant.com>\n\
 Architecture: all\n\
 Description: The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models.\n\
