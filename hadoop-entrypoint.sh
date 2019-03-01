@@ -46,35 +46,35 @@ case "${HADOOP_NODE_TYPE}" in
                 init_hdfs
             fi
         fi
-        hadoop-daemon.sh --config /etc/hadoop --script hdfs start namenode
+        hadoop-daemon.sh --script hdfs start namenode
         tail -f $(find /var/log/hadoop -name hadoop*namenode*.out)
         ;;
     resourcemanager)
         systemctl stop ssh
         systemctl disable ssh
-        yarn-daemon.sh --config /etc/hadoop start resourcemanager
+        yarn-daemon.sh start resourcemanager
         tail -f $(find /var/log/hadoop -name yarn*resourcemanager*.out)
         ;;
     datanode)
         update_sshd_port
-        hadoop-daemons.sh --config /etc/hadoop --script hdfs start datanode
+        hadoop-daemons.sh --script hdfs start datanode
         tail -f $(find /var/log/hadoop -name hadoop*datanode*.out)
         ;;
     nodemanager)
         update_sshd_port
-        yarn-daemons.sh --config /etc/hadoop start nodemanager
+        yarn-daemons.sh start nodemanager
         tail -f $(find /var/log/hadoop -name yarn*nodemanager*.out)
         ;;
     historyserver)
         systemctl stop ssh
         systemctl disable ssh
-        mr-jobhistory-daemon.sh --config /etc/hadoop start historyserver
+        mr-jobhistory-daemon.sh start historyserver
         tail -f $(find /var/log/hadoop -name mapred*historyserver*.out)
         ;;
     webappproxy)
         systemctl stop ssh
         systemctl disable ssh
-        yarn-daemon.sh --config /etc/hadoop start proxyserver
+        yarn-daemon.sh start proxyserver
         tail -f $(find /var/log/hadoop -name yarn*proxyserver*.out)
         ;;
     *)

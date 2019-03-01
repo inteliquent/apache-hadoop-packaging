@@ -47,7 +47,14 @@ ldconfig -v" > postinst && \
     mkdir /root/.ssh
 
 # Configure the environment.
+ENV HADOOP_CONF_DIR=/etc/hadoop
 ENV HADOOP_HOME=/usr/local
+ENV HADOOP_LOG_DIR=/var/log/hadoop
+ENV HADOOP_PREFIX=/usr/local
+
+ENV YARN_CONF_DIR=/etc/hadoop
+ENV YARN_LOG_DIR=/var/log/hadoop
+
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 # Set the container's entry point.
