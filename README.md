@@ -23,4 +23,6 @@ $] sudo docker run -d --name namenode -e HADOOP_NODE_TYPE=namenode -v /etc/hadoo
 
 *Note: If the host folder `/etc/hadoop` is empty the container will write a set of default config files and exit. Once the files are updated restart the container and the selected specialization will run with the updated configuration.*
 
+*Note: The container expects the logs to be stored in the `/var/log/hadoop` folder. Keep that in mind when updating the configuration files.*
+
 For more information on how to deploy an Apache Hadoop cluster please visit the [project site](http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html).
