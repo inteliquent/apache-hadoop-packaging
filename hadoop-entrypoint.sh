@@ -1,14 +1,20 @@
 #!/bin/bash
 
 function init_hdfs {
-    if [ -n "$HADOOP_NAME_NODE_INIT" ]; then
-        if [ $(echo "$HADOOP_NAME_NODE_INIT" | tr '[:upper:]' '[:lower:]') == "true" ]; then
-            if [ -n "$HADOOP_CLUSTER_NAME" ]; then
-                hdfs namenode -format "$HADOOP_CLUSTER_NAME"
-            else
-                echo "The environment variable HADOOP_CLUSTER_NAME must be defined to initialize the name node."
-                exit 1
-            fi
+    if [ "${HADOOP_NODE_TYPE}" == "namenode" ]; then
+        if [ -n "${HADOOP_CLUSTER_NAME}" ]; then
+            hdfs namenode -format "${HADOOP_CLUSTER_NAME}"
+        else
+            echo "The environment variable HADOOP_CLUSTER_NAME must be defined to initialize the cluster."
+            exit 1
+        fi
+    fi
+}
+
+function update_sshd_port {
+    if [ "${HADOOP_NODE_TYPE}" == "datanode" ] || [ "${HADOOP_NODE_TYPE}" == "nodemanager" ]; then
+        if [ -n "${SSHD_PORT}" ]; then
+            sed -i "s/Port 22/Port ${SSHD_PORT}/g" /etc/ssh/sshd_config
         fi
     fi
 }
@@ -22,41 +28,41 @@ fi
 # to the config directory and give the user an opportunity to
 # configure the container.
 if [ "$(ls -A /etc/hadoop | wc -l)" -eq "0" ]; then
-    cp -varf /usr/local/share/hadoop/config/* /etc/hadoop
+    cp -varf /usr/local/etc/hadoop/* /etc/hadoop
     echo "A vanilla configuration file set has been copied into the configuration folder."
     echo "Please update the configuration files and restart the container."
     exit 1
 fi
 
 # Specialize the container.
-case "$HADOOP_NODE_TYPE" in
+case "${HADOOP_NODE_TYPE}" in
     namenode)
-        init_hdfs
-        systemd start hadoop-namenode.service
-        systemd status hadoop-namenode.service
+        if [ -n "${HADOOP_NAME_NODE_INIT}" ]; then
+            if [ $(echo "${HADOOP_NAME_NODE_INIT}" | tr '[:upper:]' '[:lower:]') == "true" ]; then
+                init_hdfs
+            fi
+        fi
+        hadoop-daemon.sh --config /etc/hadoop --script hdfs start namenode
         ;;
     resourcemanager)
-        systemd start hadoop-resourcemanager.service
-        systemd status hadoop-resourcemanager.service
+        yarn-daemon.sh --config /etc/hadoop start resourcemanager
         ;;
     datanode)
-        systemd start hadoop-datanode.service
-        systemd status hadoop-datanode.service
+        update_sshd_port
+        hadoop-daemons.sh --config /etc/hadoop --script hdfs start datanode
         ;;
     nodemanager)
-        systemd start hadoop-nodemanager.service
-        systemd status hadoop-nodemanager.service
+        update_sshd_port
+        yarn-daemons.sh --config /etc/hadoop start nodemanager
         ;;
     historyserver)
-        systemd start hadoop-historyserver.service
-        systemd status hadoop-historyserver.service
+        mr-jobhistory-daemon.sh --config /etc/hadoop start historyserver
         ;;
     webappproxy)
-        systemd start hadoop-webappproxy.service
-        systemd status hadoop-webappproxy.service
+        yarn-daemon.sh --config /etc/hadoop start proxyserver
         ;;
     *)
-        echo "Environment variable HADOOP_NODE_TYPE must be one of the following: {namenode|resourcemanager|datanode|nodemanager}"
+        echo "Environment variable HADOOP_NODE_TYPE must be one of the following: {namenode|resourcemanager|datanode|nodemanager|historyserver|webappproxy}"
         exit 1
 esac
 

@@ -1,21 +1,47 @@
-FROM ubuntu:16.04
+FROM ubuntu:xenial
 
-# Add the OpenJDK repository.
-RUN apt-get update && apt-get install -y software-properties-common
-RUN add-apt-repository ppa:openjdk-r/ppa
+RUN apt update && \
+    # Add the OpenJDK Repository.
+    apt install --no-install-recommends -y software-properties-common && \
+    add-apt-repository ppa:openjdk-r/ppa && \
+    # Install OpenJDK 8.
+    apt update && \
+    apt install --no-install-recommends -y curl openjdk-8-jdk rsync ssh && \
+    rm -rf /var/lib/apt/lists/* && \
+    # Download the latest stable Apache Hadoop version.
+    curl -o /tmp/hadoop-2.9.2.tar.gz http://mirrors.ibiblio.org/apache/hadoop/common/hadoop-2.9.2/hadoop-2.9.2.tar.gz && \
+    cd /tmp && \
+    tar xzvf hadoop-2.9.2.tar.gz && \
+    # Create a debian package for Apache Hadoop.
+    cd hadoop-2.9.2 && \
+    mkdir -p usr/local && \
+    mv bin usr/local/ && \
+    mv etc usr/local/ && \
+    mv include usr/local/ && \
+    mv lib usr/local/ && \
+    mv libexec usr/local/ && \
+    mv sbin usr/local/ && \
+    mv share usr/local/ && \
+    mkdir DEBIAN && \
+    cd DEBIAN && \
+    echo "Package: hadoop\n\
+Version: 3.2.0\n\
+Maintainer: Thomas Quintana <thomas.quintana@voyant.com>\n\
+Architecture: all\n\
+Description: The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models.\n\
+Depends: openjdk-8-jdk, rsync, ssh" > control && \
+    echo "#!/bin/bash\n\n\
+ldconfig -v" > postinst && \
+    chmod 0555 postinst && \
+    cd /tmp && \
+    dpkg-deb --build hadoop-2.9.2 && \
+    # Install Apache Hadoop.
+    dpkg -i hadoop-2.9.2.deb && \
+    rm -rf /tmp/hadoop-2.9.2 /tmp/hadoop-2.9.2.deb /tmp/hadoop-2.9.2.tar.gz
 
-# Install Hadoop dependencies.
-RUN apt-get update && apt-get install -y openjdk-8-jdk rsync ssh
-
-# Set the JAVA_HOME environment variable.
+# Configure the environment.
+ENV HADOOP_HOME=/usr/local
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-
-# Install Hadoop.
-COPY hadoop-3.2.0 /tmp/hadoop-3.2.0
-WORKDIR /tmp
-RUN dpkg-deb --build hadoop-3.2.0
-RUN dpkg -i hadoop-3.2.0.deb && rm -fr hadoop-3.2.0.deb hadoop-3.2.0
-ENV HADOOP_PREFIX=/usr/local
 
 # Set the container's entry point.
 COPY hadoop-entrypoint.sh /usr/local/bin/hadoop-entrypoint.sh
