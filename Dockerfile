@@ -15,6 +15,7 @@ COPY hadoop-3.2.0 /tmp/hadoop-3.2.0
 WORKDIR /tmp
 RUN dpkg-deb --build hadoop-3.2.0
 RUN dpkg -i hadoop-3.2.0.deb && rm -fr hadoop-3.2.0.deb hadoop-3.2.0
+ENV HADOOP_PREFIX=/usr/local
 
 # Set the container's entry point.
 COPY hadoop-entrypoint.sh /usr/local/bin/hadoop-entrypoint.sh
