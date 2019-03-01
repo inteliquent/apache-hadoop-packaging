@@ -37,6 +37,8 @@ fi
 # Specialize the container.
 case "${HADOOP_NODE_TYPE}" in
     namenode)
+        systemctl stop ssh
+        systemctl disable ssh
         if [ -n "${HADOOP_NAME_NODE_INIT}" ]; then
             if [ $(echo "${HADOOP_NAME_NODE_INIT}" | tr '[:upper:]' '[:lower:]') == "true" ]; then
                 init_hdfs
@@ -46,6 +48,8 @@ case "${HADOOP_NODE_TYPE}" in
         tail -f $(find /var/log/hadoop -name hadoop*namenode*.log)
         ;;
     resourcemanager)
+        systemctl stop ssh
+        systemctl disable ssh
         yarn-daemon.sh --config /etc/hadoop start resourcemanager
         tail -f $(find /var/log/hadoop -name yarn*resourcemanager*.log)
         ;;
@@ -60,10 +64,14 @@ case "${HADOOP_NODE_TYPE}" in
         tail -f $(find /var/log/hadoop -name yarn*nodemanager*.log)
         ;;
     historyserver)
+        systemctl stop ssh
+        systemctl disable ssh
         mr-jobhistory-daemon.sh --config /etc/hadoop start historyserver
         tail -f $(find /var/log/hadoop -name mapred*historyserver*.log)
         ;;
     webappproxy)
+        systemctl stop ssh
+        systemctl disable ssh
         yarn-daemon.sh --config /etc/hadoop start proxyserver
         tail -f $(find /var/log/hadoop -name yarn*proxyserver*.log)
         ;;
