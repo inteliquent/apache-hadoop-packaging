@@ -50,35 +50,35 @@ case "${HADOOP_NODE_TYPE}" in
             fi
         fi
         hadoop-daemon.sh --script hdfs start namenode
-        tail -f /var/log/hadoop/$(find /var/log/hadoop -name hadoop*namenode*.out)
+        tail -f $(find /var/log/hadoop -name hadoop*namenode*.out)
         ;;
     resourcemanager)
         systemctl stop ssh
         systemctl disable ssh
         yarn-daemon.sh start resourcemanager
-        tail -f /var/log/hadoop/$(find /var/log/hadoop -name yarn*resourcemanager*.out)
+        tail -f $(find /var/log/hadoop -name yarn*resourcemanager*.out)
         ;;
     datanode)
         update_sshd_port
         hadoop-daemons.sh --script hdfs start datanode
-        tail -f /var/log/hadoop/$(find /var/log/hadoop -name hadoop*datanode*.out)
+        tail -f $(find /var/log/hadoop -name hadoop*datanode*.out)
         ;;
     nodemanager)
         update_sshd_port
         yarn-daemons.sh start nodemanager
-        tail -f /var/log/hadoop/$(find /var/log/hadoop -name yarn*nodemanager*.out)
+        tail -f $(find /var/log/hadoop -name yarn*nodemanager*.out)
         ;;
     historyserver)
         systemctl stop ssh
         systemctl disable ssh
         mr-jobhistory-daemon.sh start historyserver
-        tail -f /var/log/hadoop/$(find /var/log/hadoop -name mapred*historyserver*.out)
+        tail -f $(find /var/log/hadoop -name mapred*historyserver*.out)
         ;;
     webappproxy)
         systemctl stop ssh
         systemctl disable ssh
         yarn-daemon.sh start proxyserver
-        tail -f /var/log/hadoop/$(find /var/log/hadoop -name yarn*proxyserver*.out)
+        tail -f $(find /var/log/hadoop -name yarn*proxyserver*.out)
         ;;
     *)
         echo "Environment variable HADOOP_NODE_TYPE must be one of the following: {namenode|resourcemanager|datanode|nodemanager|historyserver|webappproxy}"
